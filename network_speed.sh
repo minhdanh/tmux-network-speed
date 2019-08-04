@@ -13,11 +13,9 @@ get_speed()
     local vel_mb=$(( vel / MILLION ))
 
     if [[ $vel_mb != 0 ]] ; then
-        echo -n "$vel_mb MB/s"
-    elif [[ $vel_kb != 0 ]] ; then
-        echo -n "$vel_kb KB/s";
+        printf "%02d MB/s" $vel_mb
     else
-        echo -n "$vel B/s";
+        printf "%02d KB/s" $vel_kb
     fi
 }
 
