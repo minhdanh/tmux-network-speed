@@ -24,7 +24,7 @@ get_speed()
     local vel_kb=$(echo "$vel" $THOUSAND | awk '{print ($1 / $2)}')
     local vel_mb=$(echo "$vel" $MILLION | awk '{print ($1 / $2)}')
 
-    result=$(printf "%05.2f != 0\n" $vel_mb | bc -l)
+    result=$(printf "%05.2f > 99.99\n" $vel_kb | bc -l)
     if [[ $result == 1 ]]; then
         printf "%05.2f MB/s" $vel_mb
     else
