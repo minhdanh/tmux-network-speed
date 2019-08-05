@@ -48,8 +48,8 @@ if [[ -z "$c_rx" ]]; then
 fi
 
 speed_output=$(macos-network-speed en0)
-n_tx=$(echo "$speed_output" | grep RX | cut -d: -f2 | awk '{print $1}')
-n_rx=$(echo "$speed_output" | grep TX | cut -d: -f2 | awk '{print $1}')
+n_rx=$(echo "$speed_output" | grep RX | cut -d: -f2 | awk '{print $1}')
+n_tx=$(echo "$speed_output" | grep TX | cut -d: -f2 | awk '{print $1}')
 tmux set-option -gq "@macos_network_speed_tx" $n_tx
 tmux set-option -gq "@macos_network_speed_rx" $n_rx
 
