@@ -18,16 +18,17 @@ get_speed()
     fi
 
     if [ ! "$current" -eq "0" ]; then
-      vel=$(( ( $new - $current ) / $interval ))
+      vel=$(echo "$(( $new - $current )) $interval" | awk '{print ($1 / $2)}')
     fi
 
-    local vel_kb=$(( vel / THOUSAND ))
-    local vel_mb=$(( vel / MILLION ))
+    local vel_kb=$(echo "$vel" $THOUSAND | awk '{print ($1 / $2)}')
+    local vel_mb=$(echo "$vel" $MILLION | awk '{print ($1 / $2)}')
 
-    if [[ $vel_mb != 0 ]] ; then
-        printf "%02d MB/s" $vel_mb
+    result=$(printf "%05.2f != 0\n" $vel_mb | bc -l)
+    if [[ $result == 1 ]]; then
+        printf "%05.2f MB/s" $vel_mb
     else
-        printf "%02d KB/s" $vel_kb
+        printf "%05.2f KB/s" $vel_kb
     fi
 }
 
