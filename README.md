@@ -23,5 +23,13 @@ Then hit `<prefix> + I` to install the plugin.
 Sample output:
 
 ```
-↓ 25 MB/s ↑ 102 KB/s
+↓ 25.02 MB/s ↑ 102.53 KB/s
+```
+
+## Options
+
+In case you want to monitor a network interface other than `en0`, set `macos_network_speed_interface` to the name of that network interface.
+
+```
+set -g @macos_network_speed_interface 'en1'
 ```
