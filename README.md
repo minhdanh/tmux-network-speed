@@ -33,3 +33,10 @@ In case you want to monitor a network interface other than `en0`, set `macos_net
 ```
 set -g @macos_network_speed_interface 'en1'
 ```
+
+Colors for download and upload are supported:
+
+```
+set -g @macos_network_speed_download_color '#[fg=green]'
+set -g @macos_network_speed_upload_color '#[fg=yellow]'
+```
