@@ -38,9 +38,9 @@ network_interface=$(get_tmux_option "@macos_network_speed_interface" "en0")
 c_tx=$(get_tmux_option "@macos_network_speed_tx" 0)
 c_rx=$(get_tmux_option "@macos_network_speed_rx" 0)
 
-speed_output=$(macos-network-speed $network_interface)
-n_rx=$(echo "$speed_output" | grep RX | cut -d: -f2 | awk '{print $1}')
-n_tx=$(echo "$speed_output" | grep TX | cut -d: -f2 | awk '{print $1}')
+speed_output=$(netstat -bn -I $network_interface | grep "<Link#")
+n_rx=$(echo "$speed_output" | awk '{print $7}')
+n_tx=$(echo "$speed_output" | awk '{print $10}')
 tmux set-option -gq "@macos_network_speed_tx" $n_tx
 tmux set-option -gq "@macos_network_speed_rx" $n_rx
 
