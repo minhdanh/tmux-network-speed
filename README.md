@@ -1,12 +1,13 @@
-# tmux-macos-network-speed
+# tmux-network-speed
+(Previously `tmux-macos-network-speed`)
 
-Tmux plugin to monitor network stats on macOS. Inspired by https://github.com/tmux-plugins/tmux-net-speed
+Tmux plugin to monitor network stats. Inspired by https://github.com/tmux-plugins/tmux-net-speed
 
 ## Installation with [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm)
 
 Add this to `.tmux.conf`:
 ```
-set -g @plugin 'minhdanh/tmux-macos-network-speed'
+set -g @plugin 'minhdanh/tmux-network-speed'
 ```
 
 Also add `#{network_speed}` to your left/right status bar.
@@ -24,15 +25,15 @@ Sample output:
 
 ## Options
 
-In case you want to monitor a network interface other than `en0`, set `macos_network_speed_interface` to the name of that network interface.
+In case you want to monitor a network interface other than `en0`, set `network_speed_interface` to the name of that network interface.
 
 ```
-set -g @macos_network_speed_interface 'en1'
+set -g @network_speed_interface 'enp37s0'
 ```
 
 Colors for download and upload are supported:
 
 ```
-set -g @macos_network_speed_download_color '#[fg=green]'
-set -g @macos_network_speed_upload_color '#[fg=yellow]'
+set -g @network_speed_download_color '#[fg=green]'
+set -g @network_speed_upload_color '#[fg=yellow]'
 ```

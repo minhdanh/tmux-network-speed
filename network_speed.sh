@@ -34,20 +34,20 @@ get_speed()
     fi
 }
 
-network_interface=$(get_tmux_option "@macos_network_speed_interface" "en0")
-c_tx=$(get_tmux_option "@macos_network_speed_tx" 0)
-c_rx=$(get_tmux_option "@macos_network_speed_rx" 0)
+network_interface=$(get_tmux_option "@network_speed_interface" "en0")
+c_tx=$(get_tmux_option "@network_speed_tx" 0)
+c_rx=$(get_tmux_option "@network_speed_rx" 0)
 
-speed_output=$(netstat -bn -I $network_interface | grep "<Link#")
-n_rx=$(echo "$speed_output" | awk '{print $7}')
-n_tx=$(echo "$speed_output" | awk '{print $10}')
-tmux set-option -gq "@macos_network_speed_tx" $n_tx
-tmux set-option -gq "@macos_network_speed_rx" $n_rx
+speed_output=$(get_speed_output $network_interface)
+n_rx=$(echo "$speed_output" | awk '{print $1}')
+n_rx=$(echo "$speed_output" | awk '{print $2}')
+tmux set-option -gq "@network_speed_tx" $n_tx
+tmux set-option -gq "@network_speed_rx" $n_rx
 
 upload_speed=$(get_speed $n_tx $c_tx)
 download_speed=$(get_speed $n_rx $c_rx)
 
-download_color=$(get_tmux_option "@macos_network_speed_download_color" "$default_download_color")
-upload_color=$(get_tmux_option "@macos_network_speed_upload_color" "$default_upload_color")
+download_color=$(get_tmux_option "@network_speed_download_color" "$default_download_color")
+upload_color=$(get_tmux_option "@network_speed_upload_color" "$default_upload_color")
 
 printf "%s↓ %s %s↑ %s#[fg=default]" "$download_color" "$download_speed" "$upload_color" "$upload_speed"
