@@ -25,7 +25,7 @@ Sample output:
 
 ## Options
 
-In case you want to monitor a network interface other than `en0`, set `network_speed_interface` to the name of that network interface.
+In case you want to monitor a network interface other than `en0`, set `network_speed_interface` to the name of that network interface:
 
 ```
 set -g @network_speed_interface 'enp37s0'
