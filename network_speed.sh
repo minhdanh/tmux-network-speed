@@ -40,7 +40,7 @@ c_rx=$(get_tmux_option "@network_speed_rx" 0)
 
 speed_output=$(get_speed_output $network_interface)
 n_rx=$(echo "$speed_output" | awk '{print $1}')
-n_rx=$(echo "$speed_output" | awk '{print $2}')
+n_tx=$(echo "$speed_output" | awk '{print $2}')
 tmux set-option -gq "@network_speed_tx" $n_tx
 tmux set-option -gq "@network_speed_rx" $n_rx
 
