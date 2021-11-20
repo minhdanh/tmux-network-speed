@@ -37,3 +37,8 @@ Colors for download and upload are supported:
 set -g @network_speed_download_color '#[fg=green]'
 set -g @network_speed_upload_color '#[fg=yellow]'
 ```
+
+You can also set the format for the speed, it accepts any format string that `printf` supports:
+```
+set -g @network_speed_format '%05.2f'
+```
