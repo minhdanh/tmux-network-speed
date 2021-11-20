@@ -18,6 +18,7 @@ get_speed()
     local vel=0
 
     local interval=$(get_tmux_option 'status-interval' 3)
+    local format_string=$(get_tmux_option '@network_speed_format' "%05.2f")
 
     if [ ! "$current" -eq "0" ]; then
       vel=$(echo "$(( $new - $current )) $interval" | awk '{print ($1 / $2)}')
@@ -28,9 +29,11 @@ get_speed()
 
     result=$(printf "%05.2f > 99.99\n" $vel_kb | bc -l)
     if [[ $result == 1 ]]; then
-        printf "%05.2f MB/s" $vel_mb
+        local vel_mb_f=$(printf $format_string $vel_mb)
+        printf "%s MB/s" $vel_mb_f
     else
-        printf "%05.2f KB/s" $vel_kb
+        local vel_kb_f=$(printf $format_string $vel_kb)
+        printf "%s KB/s" $vel_kb_f
     fi
 }
 
