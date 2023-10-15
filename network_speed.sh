@@ -15,13 +15,13 @@ get_speed()
 
     local new=$1
     local current=$2
+    local interval=$3
     local vel=0
 
-    local interval=$(get_tmux_option 'status-interval' 3)
     local format_string=$(get_tmux_option '@network_speed_format' "%05.2f")
 
     if [ ! "$current" -eq "0" ]; then
-      vel=$(echo "$(( $new - $current )) $interval" | awk '{print ($1 / $2)}')
+        vel=$(echo "$(( $new - $current )) $interval" | awk '{print ($1 / $2)}')
     fi
 
     local vel_kb=$(echo "$vel" $THOUSAND | awk '{print ($1 / $2)}')
@@ -47,8 +47,26 @@ new_tx=$(echo "$speed_output" | awk '{print $2}')
 tmux set-option -gq "@network_speed_tx" $new_tx
 tmux set-option -gq "@network_speed_rx" $new_rx
 
-upload_speed=$(get_speed $new_tx $current_tx)
-download_speed=$(get_speed $new_rx $current_rx)
+cur_time=$(date +%s)
+last_update_time_tx=$(get_tmux_option '@network_speed_last_update_time_tx' 0)
+interval_tx=$((cur_time - last_update_time_tx))
+last_update_time_rx=$(get_tmux_option '@network_speed_last_update_time_rx' 0)
+interval_rx=$((cur_time - last_update_time_rx))
+
+if [ $interval_tx -eq 0 ]; then
+    upload_speed=$(get_tmux_option '@network_speed_last_speed_tx')
+else
+    upload_speed=$(get_speed $new_tx $current_tx $interval_tx)
+    tmux set-option -gq "@network_speed_last_speed_tx" "$upload_speed"
+    tmux set-option -gq "@network_speed_last_update_time_tx" $(date +%s)
+fi
+if [ $interval_rx -eq 0 ]; then
+    download_speed=$(get_tmux_option '@network_speed_last_speed_rx')
+else
+    download_speed=$(get_speed $new_rx $current_rx $interval_rx)
+    tmux set-option -gq "@network_speed_last_speed_rx" "$download_speed"
+    tmux set-option -gq "@network_speed_last_update_time_rx" $(date +%s)
+fi
 
 download_color=$(get_tmux_option "@network_speed_download_color" "$default_download_color")
 upload_color=$(get_tmux_option "@network_speed_upload_color" "$default_upload_color")
