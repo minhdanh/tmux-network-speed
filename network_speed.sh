@@ -38,17 +38,17 @@ get_speed()
 }
 
 network_interface=$(get_tmux_option "@network_speed_interface" "en0")
-c_tx=$(get_tmux_option "@network_speed_tx" 0)
-c_rx=$(get_tmux_option "@network_speed_rx" 0)
+current_tx=$(get_tmux_option "@network_speed_tx" 0)
+current_rx=$(get_tmux_option "@network_speed_rx" 0)
 
 speed_output=$(get_speed_output $network_interface)
-n_rx=$(echo "$speed_output" | awk '{print $1}')
-n_tx=$(echo "$speed_output" | awk '{print $2}')
-tmux set-option -gq "@network_speed_tx" $n_tx
-tmux set-option -gq "@network_speed_rx" $n_rx
+new_rx=$(echo "$speed_output" | awk '{print $1}')
+new_tx=$(echo "$speed_output" | awk '{print $2}')
+tmux set-option -gq "@network_speed_tx" $new_tx
+tmux set-option -gq "@network_speed_rx" $new_rx
 
-upload_speed=$(get_speed $n_tx $c_tx)
-download_speed=$(get_speed $n_rx $c_rx)
+upload_speed=$(get_speed $new_tx $current_tx)
+download_speed=$(get_speed $new_rx $current_rx)
 
 download_color=$(get_tmux_option "@network_speed_download_color" "$default_download_color")
 upload_color=$(get_tmux_option "@network_speed_upload_color" "$default_upload_color")
