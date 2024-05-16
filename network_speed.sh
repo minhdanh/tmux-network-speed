@@ -11,7 +11,7 @@ default_upload_color="$(get_tmux_option "@network_speed_upload_color" "#[fg=yell
 default_download_color="$(get_tmux_option "@network_speed_download_color" "#[fg=green]")"
 
 # Retrieve tmux options for speed threshold and high speed color, set default if not found
-threshold_speed="$(get_tmux_option "@network_speed_threshold" "1.0")"
+threshold_speed="$(get_tmux_option "@network_speed_threshold" "0")"
 high_speed_color="$(get_tmux_option "@network_speed_high_color" "#[fg=red]")"
 
 # Retrieve the network interface and current transmitted (tx) and received (rx) byte counts from tmux options
