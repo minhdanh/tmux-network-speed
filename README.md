@@ -23,7 +23,7 @@ Then hit `<prefix> + I` to install the plugin.
 
 Sample output:
 
-![sample.png](./sample.png "Sample output")
+![sample.gif](./sample.gif "Sample output")
 
 ## Options
 
