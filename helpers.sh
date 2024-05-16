@@ -18,6 +18,7 @@ get_speed() {
 	# Constants for conversion
 	local THOUSAND=1024
 	local MILLION=1048576
+	local BILLION=1073741824
 
 	local new=$1
 	local current=$2
@@ -32,15 +33,20 @@ get_speed() {
 		vel=$(echo "$(($new - $current)) $interval" | awk '{print ($1 / $2)}')
 	fi
 
-	# Convert speed to KB/s and MB/s
+	# Convert speed to KB/s, MB/s, and GB/s
 	local vel_kb=$(echo "$vel" $THOUSAND | awk '{print ($1 / $2)}')
 	local vel_mb=$(echo "$vel" $MILLION | awk '{print ($1 / $2)}')
+	local vel_gb=$(echo "$vel" $BILLION | awk '{print ($1 / $2)}')
 
-	# Check if speed is greater than 99.99 KB/s, then display in MB/s
-	result=$(printf "%05.2f > 99.99\n" $vel_kb | bc -l)
-	if [[ $result == 1 ]]; then
-		local vel_mb_f=$(printf $format_string $vel_mb)
-		printf "%s MB/s" $vel_mb_f
+	# Check if speed is greater than 99.99 KB/s, then display in MB/s or GB/s
+	if (($(echo "$vel_kb > 1024" | bc -l))); then
+		if (($(echo "$vel_mb > 1024" | bc -l))); then
+			local vel_gb_f=$(printf $format_string $vel_gb)
+			printf "%s GB/s" $vel_gb_f
+		else
+			local vel_mb_f=$(printf $format_string $vel_mb)
+			printf "%s MB/s" $vel_mb_f
+		fi
 	else
 		local vel_kb_f=$(printf $format_string $vel_kb)
 		printf "%s KB/s" $vel_kb_f
@@ -65,15 +71,48 @@ get_speed_output() {
 get_speed_color() {
 	local speed=$1
 	local threshold=$2
-	local default_color=$3
-	local high_color=$4
+	local threshold_unit=$3
+	local default_color=$4
+	local high_color=$5
+
+	# Convert threshold to KB/s for comparison
+	case "$threshold_unit" in
+	"KB/s")
+		threshold_kb=$(echo "$threshold" | awk '{print $1}')
+		;;
+	"MB/s")
+		threshold_kb=$(echo "$threshold * 1024" | bc -l)
+		;;
+	"GB/s")
+		threshold_kb=$(echo "$threshold * 1048576" | bc -l)
+		;;
+	*)
+		threshold_kb=$(echo "$threshold" | awk '{print $1}')
+		;;
+	esac
 
 	# Extract the speed value and unit
 	local speed_value=$(echo $speed | awk '{print $1}')
 	local speed_unit=$(echo $speed | awk '{print $2}')
 
-	# If speed unit is MB/s and speed value is greater than the threshold, use high color
-	if [[ $speed_unit == "MB/s" ]] && (($(echo "$speed_value > $threshold" | bc -l))); then
+	# Convert speed to KB/s for comparison
+	case "$speed_unit" in
+	"KB/s")
+		speed_kb=$(echo "$speed_value" | awk '{print $1}')
+		;;
+	"MB/s")
+		speed_kb=$(echo "$speed_value * 1024" | bc -l)
+		;;
+	"GB/s")
+		speed_kb=$(echo "$speed_value * 1048576" | bc -l)
+		;;
+	*)
+		speed_kb=$(echo "$speed_value" | awk '{print $1}')
+		;;
+	esac
+
+	# If speed in KB/s is greater than the threshold in KB/s, use high color
+	if (($(echo "$speed_kb > $threshold_kb" | bc -l))); then
 		echo "$high_color"
 	else
 		# Otherwise, use the default color
