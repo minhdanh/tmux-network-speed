@@ -10,7 +10,8 @@ source "$CURRENT_DIR/helpers.sh"
 default_upload_color="$(get_tmux_option "@network_speed_upload_color" "#[fg=yellow]")"
 default_download_color="$(get_tmux_option "@network_speed_download_color" "#[fg=green]")"
 
-# Retrieve tmux options for speed threshold, unit and high speed color, set default if not found
+# Retrieve tmux options for speed threshold, unit and high speed color. A zero
+# threshold disables high-speed coloring until the user explicitly enables it.
 threshold_speed="$(get_tmux_option "@network_speed_threshold" "0")"
 threshold_unit="$(get_tmux_option "@network_speed_threshold_unit" "MB/s")"
 high_speed_color="$(get_tmux_option "@network_speed_high_color" "#[fg=red]")"
@@ -56,9 +57,9 @@ else
 	tmux set-option -gq "@network_speed_last_update_time_rx" $(date +%s)
 fi
 
-# Determine the color for download and upload speeds based on the threshold, unit, and high speed color settings
-download_color=$(get_speed_color "$download_speed" "$threshold_speed" "$threshold_unit" "$default_download_color" "$high_speed_color")
-upload_color=$(get_speed_color "$upload_speed" "$threshold_speed" "$threshold_unit" "$default_upload_color" "$high_speed_color")
+# Determine the color for download and upload speeds from the raw byte counters.
+download_color=$(get_speed_color "$new_rx" "$current_rx" "$interval_rx" "$threshold_speed" "$threshold_unit" "$default_download_color" "$high_speed_color")
+upload_color=$(get_speed_color "$new_tx" "$current_tx" "$interval_tx" "$threshold_speed" "$threshold_unit" "$default_upload_color" "$high_speed_color")
 
 # Print the download and upload speeds with the appropriate colors
 printf "%s↓ %s#[fg=default] %s↑ %s#[fg=default]" "$download_color" "$download_speed" "$upload_color" "$upload_speed"

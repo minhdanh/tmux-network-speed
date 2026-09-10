@@ -67,55 +67,48 @@ get_speed_output() {
 	fi
 }
 
-# Function to get the appropriate color based on the speed
+# Function to get the appropriate color based on the raw byte counters
 get_speed_color() {
-	local speed=$1
-	local threshold=$2
-	local threshold_unit=$3
-	local default_color=$4
-	local high_color=$5
+	local new=$1
+	local current=$2
+	local interval=$3
+	local threshold=$4
+	local threshold_unit=$5
+	local default_color=$6
+	local high_color=$7
+	local threshold_bytes
+	local speed_bytes=0
 
-	# Convert threshold to KB/s for comparison
+	# A zero or unset threshold disables high-speed coloring.
+	if [ -z "$threshold" ] || ! (($(echo "$threshold > 0" | bc -l))); then
+		echo "$default_color"
+		return
+	fi
+
+	# Convert the configured threshold to bytes per second.
 	case "$threshold_unit" in
 	"KB/s")
-		threshold_kb=$(echo "$threshold" | awk '{print $1}')
+		threshold_bytes=$(echo "$threshold * 1024" | bc -l)
 		;;
 	"MB/s")
-		threshold_kb=$(echo "$threshold * 1024" | bc -l)
+		threshold_bytes=$(echo "$threshold * 1048576" | bc -l)
 		;;
 	"GB/s")
-		threshold_kb=$(echo "$threshold * 1048576" | bc -l)
+		threshold_bytes=$(echo "$threshold * 1073741824" | bc -l)
 		;;
 	*)
-		threshold_kb=$(echo "$threshold" | awk '{print $1}')
+		echo "$default_color"
+		return
 		;;
 	esac
 
-	# Extract the speed value and unit
-	local speed_value=$(echo $speed | awk '{print $1}')
-	local speed_unit=$(echo $speed | awk '{print $2}')
+	if [ "$current" -ne 0 ] && [ "$interval" -gt 0 ]; then
+		speed_bytes=$(echo "($new - $current) / $interval" | bc -l)
+	fi
 
-	# Convert speed to KB/s for comparison
-	case "$speed_unit" in
-	"KB/s")
-		speed_kb=$(echo "$speed_value" | awk '{print $1}')
-		;;
-	"MB/s")
-		speed_kb=$(echo "$speed_value * 1024" | bc -l)
-		;;
-	"GB/s")
-		speed_kb=$(echo "$speed_value * 1048576" | bc -l)
-		;;
-	*)
-		speed_kb=$(echo "$speed_value" | awk '{print $1}')
-		;;
-	esac
-
-	# If speed in KB/s is greater than the threshold in KB/s, use high color
-	if (($(echo "$speed_kb > $threshold_kb" | bc -l))); then
+	if (($(echo "$speed_bytes > $threshold_bytes" | bc -l))); then
 		echo "$high_color"
 	else
-		# Otherwise, use the default color
 		echo "$default_color"
 	fi
 }

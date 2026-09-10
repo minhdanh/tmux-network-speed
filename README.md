@@ -52,28 +52,12 @@ You can also set the format for the speed, it accepts any format string that `pr
 set -g @network_speed_format '%05.2f'
 ```
 
-### High-Speed Threshold and Color
+### High-Speed Threshold, Unit, and Color
 
-You can set a threshold speed above which the color will change to indicate high speed. The default threshold is 1.0 MB/s.
-
-Set the high-speed threshold:
+You can enable a color change above a configured speed threshold. High-speed coloring is disabled by default; set a positive threshold to enable it. Supported units are `KB/s`, `MB/s`, and `GB/s`, with `MB/s` used when no unit is configured.
 
 ```sh
 set -g @network_speed_threshold '1.0'
-```
-
-Set the color for high speed:
-
-```sh
-set -g @network_speed_high_color '#[fg=red]'
-```
-
-### High-Speed Threshold Unit
-
-You can specify the unit for the high-speed threshold. Supported units are `KB/s`, `MB/s`, and `GB/s`. The default unit is `MB/s`.
-
-Set the high-speed threshold unit:
-
-```sh
 set -g @network_speed_threshold_unit 'MB/s'
+set -g @network_speed_high_color '#[fg=red]'
 ```
